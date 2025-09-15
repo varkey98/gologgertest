@@ -19,9 +19,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("can't initialize zap logger: %v", err)
 	}
+	logger.Info("log line 1")
 	logger = logger.WithOptions(zap.WrapCore(func(core zapcore.Core) zapcore.Core {
 		return zapcore.NewTee(core, otelzap.NewCore("test-collector"))
 	}))
+
+	logger = logger.With(zap.String("service", "collector"))
+	logger.Info("log line 2")
+	for i := range 10 {
+		go func() {
+			loggertemp := logger.With(zap.Int("temp", i))
+			loggertemp.Info("current loop", zap.Int("val", i))
+		}()
+	}
 
 	settings, err := initialize(logger)
 	if err != nil {

@@ -40,7 +40,7 @@ func initialize(logger *zap.Logger) (otelcol.CollectorSettings, error) {
 		Factories:              getFactories,
 		ConfigProviderSettings: cfgProviderSettings,
 		LoggingOptions: []zap.Option{
-			zap.WrapCore(func(core zapcore.Core) zapcore.Core {
+			zap.WrapCore(func(zapcore.Core) zapcore.Core {
 				return logger.Core()
 			}),
 		},
